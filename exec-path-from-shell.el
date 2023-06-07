@@ -101,7 +101,7 @@ the SHELL environment variable."
           (const :tag "Use `shell-file-name' or $SHELL" nil))
   :group 'exec-path-from-shell)
 
-(defvar exec-path-from-shell-debug nil
+(defvar exec-path-from-shell-debug t
   "Display debug info when non-nil.")
 
 (defun exec-path-from-shell--double-quote (s)
@@ -121,9 +121,7 @@ See documentation for `exec-path-from-shell-shell-name'."
   (let ((shell (exec-path-from-shell--shell)))
     (if (string-match-p "t?csh$" shell)
         (list "-d")
-      (if (string-match-p "fish" shell)
-          (list "-l")
-        (list "-l" "-i"))))
+      (if (string-match-p "fish" shell))))
   "Additional arguments to pass to the shell.
 
 The default value denotes an interactive login shell."
@@ -186,7 +184,7 @@ shell-escaped, so they may contain $ etc."
       (goto-char (point-min))
       (if (re-search-forward "__RESULT\0\\(.*\\)\0__RESULT" nil t)
           (match-string 1)
-        (error "Expected printf output from shell, but got: %S" (buffer-string))))))
+        (setq re-result "")))))
 
 (defun exec-path-from-shell-getenvs (names)
   "Get the environment variables with NAMES from the user's shell.
